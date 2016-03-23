@@ -7,10 +7,12 @@ class ShapelibConan(ConanFile):
     version = "1.3.0"
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
+    exports = ["CMakeLists.txt", "Shapelib.cmake"]
     url="http://github.com/bilke/conan-shapelib"
     license="http://shapelib.maptools.org/license.html"
 
     ZIP_FOLDER_NAME = "shapelib-%s" % version
+    INSTALL_DIR = "_install"
 
     def source(self):
         zip_name = self.ZIP_FOLDER_NAME + ".zip"
@@ -19,18 +21,18 @@ class ShapelibConan(ConanFile):
         os.unlink(zip_name)
 
     def build(self):
-        if self.settings.compiler == "Visual Studio":
-            self.run("cd %s & nmake /f makefile.vc" % self.ZIP_FOLDER_NAME)
+        cmake = CMake(self.settings)
+        if self.settings.os == "Windows":
+            self.run("IF not exist _build mkdir _build")
         else:
-            if self.settings.arch == "x86":
-                self.run("cd %s && make CFLAGS=\"-m32\" LDFLAGS=\"-m32\"" %     self.ZIP_FOLDER_NAME)
-            else:
-                self.run("cd %s && make" % self.ZIP_FOLDER_NAME)
+            self.run("mkdir _build")
+        cd_build = "cd _build"
+        self.run("%s && cmake .. -DCMAKE_INSTALL_PREFIX=../%s %s" % (cd_build, self.INSTALL_DIR, cmake.command_line))
+        self.run("%s && cmake --build . %s" % (cd_build, cmake.build_config))
+        self.run("%s && cmake --build . --target install %s" % (cd_build, cmake.build_config))
 
     def package(self):
-        self.copy("shapefil.h", dst="include", src=self.ZIP_FOLDER_NAME)
-        self.copy("*.lib", dst="lib", src=self.ZIP_FOLDER_NAME)
-        self.copy("*.a", dst="lib", src=self.ZIP_FOLDER_NAME)
+        self.copy("*", dst=".", src=self.INSTALL_DIR)
 
     def package_info(self):
         if self.settings.compiler == "Visual Studio":
