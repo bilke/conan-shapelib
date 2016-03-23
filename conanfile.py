@@ -8,7 +8,7 @@ class ShapelibConan(ConanFile):
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
     url="http://github.com/bilke/conan-shapelib"
-    license="none"
+    license="http://shapelib.maptools.org/license.html"
 
     ZIP_FOLDER_NAME = "shapelib-%s" % version
 
