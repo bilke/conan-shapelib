@@ -1,26 +1,33 @@
+import os
 from conans import ConanFile, CMake
+from conans.tools import download, unzip
 
-class HelloConan(ConanFile):
-    name = "Hello"
-    version = "0.2"
+class ShapelibConan(ConanFile):
+    name = "Shapelib"
+    version = "1.3.0"
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
-    exports = ["CMakeLists.txt"]
-    url="http://github.com/bilke/conan-hello"
+    url="http://github.com/bilke/conan-shapelib"
     license="none"
 
+    ZIP_FOLDER_NAME = "shapelib-%s" % version
+
     def source(self):
-        self.run("git clone https://github.com/memsharded/hello.git")
+        zip_name = self.ZIP_FOLDER_NAME + ".zip"
+        download("http://download.osgeo.org/shapelib/%s" % zip_name , zip_name)
+        unzip(zip_name)
+        os.unlink(zip_name)
 
     def build(self):
-        cmake = CMake(self.settings)
-        self.run("cmake . %s" % cmake.command_line)
-        self.run("cmake --build . %s" % cmake.build_config)
+        if self.settings.arch == "x86":
+            self.run("cd %s && make CFLAGS=\"-m32\" LDFLAGS=\"-m32\"" % self.ZIP_FOLDER_NAME)
+        else:
+            self.run("cd %s && make" % self.ZIP_FOLDER_NAME)
 
     def package(self):
-        self.copy("*.h", dst="include", src="hello")
-        self.copy("*.lib", dst="lib", src="hello/lib")
-        self.copy("*.a", dst="lib", src="hello/lib")
+        self.copy("shapefil.h", dst="include", src=self.ZIP_FOLDER_NAME)
+        self.copy("*.lib", dst="lib", src=self.ZIP_FOLDER_NAME)
+        self.copy("*.a", dst="lib", src=self.ZIP_FOLDER_NAME)
 
     def package_info(self):
-        self.cpp_info.libs = ["hello"]
+        self.cpp_info.libs = ["shp"]
