@@ -19,10 +19,13 @@ class ShapelibConan(ConanFile):
         os.unlink(zip_name)
 
     def build(self):
-        if self.settings.arch == "x86":
-            self.run("cd %s && make CFLAGS=\"-m32\" LDFLAGS=\"-m32\"" % self.ZIP_FOLDER_NAME)
+        if self.settings.compiler == "Visual Studio":
+            self.run("cd %s & nmake /f makefile.vc" % self.ZIP_FOLDER_NAME)
         else:
-            self.run("cd %s && make" % self.ZIP_FOLDER_NAME)
+            if self.settings.arch == "x86":
+                self.run("cd %s && make CFLAGS=\"-m32\" LDFLAGS=\"-m32\"" %     self.ZIP_FOLDER_NAME)
+            else:
+                self.run("cd %s && make" % self.ZIP_FOLDER_NAME)
 
     def package(self):
         self.copy("shapefil.h", dst="include", src=self.ZIP_FOLDER_NAME)
