@@ -33,4 +33,7 @@ class ShapelibConan(ConanFile):
         self.copy("*.a", dst="lib", src=self.ZIP_FOLDER_NAME)
 
     def package_info(self):
-        self.cpp_info.libs = ["shp"]
+        if self.settings.compiler == "Visual Studio":
+            self.cpp_info.libs = ["shapelib"]
+        else:
+            self.cpp_info.libs = ["shp"]
