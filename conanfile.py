@@ -7,7 +7,7 @@ class ShapelibConan(ConanFile):
     version = "1.3.0"
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
-    exports = ["CMakeLists.txt", "Shapelib.cmake"]
+    exports = ["CMakeLists.txt", "Shapelib.cmake", "FindShapelib.cmake"]
     url="http://github.com/bilke/conan-shapelib"
     license="http://shapelib.maptools.org/license.html"
 
@@ -32,6 +32,7 @@ class ShapelibConan(ConanFile):
         self.run("%s && cmake --build . --target install %s" % (cd_build, cmake.build_config))
 
     def package(self):
+        self.copy("FindShapelib.cmake", ".", ".")
         self.copy("*", dst=".", src=self.INSTALL_DIR)
 
     def package_info(self):
