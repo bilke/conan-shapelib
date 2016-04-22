@@ -7,9 +7,9 @@ find_library(Shapelib_LIBRARY NAMES ${CONAN_LIBS_SHAPELIB}
 	NO_DEFAULT_PATH)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Shapelib REQUIRED_VARS
-	Shapelib_LIBRARY
-	Shapelib_INCLUDE_DIR
+find_package_handle_standard_args(Shapelib
+	REQUIRED_VARS Shapelib_LIBRARY Shapelib_INCLUDE_DIR
+	FOUND_VAR Shapelib_FOUND
 )
 
 set(Shapelib_INCLUDE_DIRS ${Shapelib_INCLUDE_DIR})
