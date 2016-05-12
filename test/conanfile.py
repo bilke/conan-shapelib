@@ -19,4 +19,4 @@ class ShapelibReuseConan(ConanFile):
         self.copy(pattern="*.dylib", dst="bin", src="lib")
 
     def test(self):
-        self.run("cd bin && ./shptest 0")
+        self.run("cd bin && .%sshptest 0" % os.sep)
