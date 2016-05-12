@@ -14,5 +14,9 @@ class ShapelibReuseConan(ConanFile):
         self.run('cmake %s %s' % (self.conanfile_directory, cmake.command_line))
         self.run("cmake --build . %s" % cmake.build_config)
 
+    def imports(self):
+        self.copy(pattern="*.dll", dst="bin", src="bin")
+        self.copy(pattern="*.dylib", dst="bin", src="lib")
+
     def test(self):
-        self.run(os.sep.join([".","bin", "shptest 0"]))
+        self.run("cd bin && ./shptest 0")
