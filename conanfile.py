@@ -23,20 +23,14 @@ class ShapelibConan(ConanFile):
         os.unlink(zip_name)
 
     def build(self):
-        cmake = CMake(self.settings)
-        if self.settings.os == "Windows":
-            self.run("IF not exist _build mkdir _build")
-        else:
-            self.run("mkdir _build")
-        cd_build = "cd _build"
-        CMAKE_OPTIONALS = ""
+        cmake = CMake(self)
         if self.options.shared == False:
-            CMAKE_OPTIONALS += "-DBUILD_SHARED_LIBS=OFF"
+            cmake.definitions["BUILD_SHARED_LIBS"] = "OFF"
         else:
-            CMAKE_OPTIONALS += "-DBUILD_SHARED_LIBS=ON"
-        self.run("%s && cmake .. -DCMAKE_INSTALL_PREFIX=../%s %s %s" % (cd_build, self.INSTALL_DIR, cmake.command_line, CMAKE_OPTIONALS))
-        self.run("%s && cmake --build . %s" % (cd_build, cmake.build_config))
-        self.run("%s && cmake --build . --target install %s" % (cd_build, cmake.build_config))
+            cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
+
+        cmake.configure(build_dir="build")
+        cmake.build(target="install")
 
     def package(self):
         self.copy("FindShapelib.cmake", ".", ".")
