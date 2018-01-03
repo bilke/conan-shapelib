@@ -16,6 +16,9 @@ class ShapelibConan(ConanFile):
     ZIP_FOLDER_NAME = "shapelib-%s" % version
     INSTALL_DIR = "_install"
 
+    def config(self):
+        del self.settings.compiler.libcxx
+
     def source(self):
         zip_name = self.ZIP_FOLDER_NAME + ".zip"
         download("https://opengeosys.s3.amazonaws.com/ogs6-lib-sources/%s" % zip_name , zip_name)
