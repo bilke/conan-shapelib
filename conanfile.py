@@ -21,7 +21,7 @@ class ShapelibConan(ConanFile):
 
     def source(self):
         zip_name = self.ZIP_FOLDER_NAME + ".zip"
-        download("https://opengeosys.s3.amazonaws.com/ogs6-lib-sources/%s" % zip_name , zip_name)
+        download("https://ogsstorage.blob.core.windows.net/src/%s" % zip_name , zip_name)
         unzip(zip_name)
         os.unlink(zip_name)
 
