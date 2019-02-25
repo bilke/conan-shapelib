@@ -7,14 +7,18 @@ class ShapelibConan(ConanFile):
     version = "1.3.0"
     generators = "cmake"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = "shared=False", "fPIC=True"
     exports = ["CMakeLists.txt", "Shapelib.cmake", "FindShapelib.cmake"]
     url="http://github.com/bilke/conan-shapelib"
     license="http://shapelib.maptools.org/license.html"
 
     ZIP_FOLDER_NAME = "shapelib-%s" % version
     INSTALL_DIR = "_install"
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
 
     def config(self):
         del self.settings.compiler.libcxx
